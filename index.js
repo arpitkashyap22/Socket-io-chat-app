@@ -17,6 +17,18 @@ const expressServer = app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 })
 
+const ADMIN = "Admin";
+
+// State
+
+const UserState = {
+    users: [],
+    setUsers: function(newUserArray){
+        this.users = newUserArray
+    }
+}
+
+
 const io = new Server(expressServer, {
     cors: {
         // origin: process.env.NODE_ENV === "production" ? false : ["http://localhost:5500", "http://127.0.0.1:5500/"]
@@ -51,3 +63,37 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("activity", `${name}`)
     })
 })
+
+function buildMessage(name,text){
+    return {
+        name,
+        text,
+        time: new Intl.DateTimeFormat("default", {
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric"
+        }).format(new Date())
+    }
+}
+
+function activateUser(id, name, room){
+    const user = {id, name, room};
+    UserState.setUsers([...UserState.users.filter(user => user.id !== id), user]);
+    return user;
+}
+
+function exitUser(id){
+    UserState.setUsers(UserState.users.filter(user => user.id !== id));
+}
+
+function getUser(id){
+    return UserState.users.find(user => user.id === id);
+}
+
+function getUserInRoom(room){
+    return UserState.users.filter(user => user.room === room);
+}
+
+function getActiveRoom(){
+    return Array.from(new Set(UserState.users.map(user => user.room)));
+}
