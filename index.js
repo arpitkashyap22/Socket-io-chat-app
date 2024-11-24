@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 const __fileName =  fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__fileName);
 
-console.log(start);
+// console.log(start);
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
     // listning for a message event
     socket.on("message", ({name, text}) =>{
         const room = getUser(socket.id)?.room
-
+        // console.log(room)
         if(room){
             io.to(room).emit('message', buildMessage(name,text))
         }
