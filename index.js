@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 const __fileName =  fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__fileName);
 
-
+console.log(start);
 const PORT = process.env.PORT || 3000;
 
 const app = express();
